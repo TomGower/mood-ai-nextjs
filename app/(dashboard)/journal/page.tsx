@@ -27,7 +27,7 @@ const JournalPage = async () => {
       <div className="grid grid-cols-3 gap-4">
         <NewEntryCard />
         {entries.map((entry) => (
-          <Link href={`/${entry.id}`} key={entry.id}>
+          <Link href={`/journal/${entry.id}`} key={entry.id}>
             <EntryCard entry={entry} />
           </Link>
         ))}
