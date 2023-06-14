@@ -1,4 +1,6 @@
-const EntryCard = ({ entry }) => {
+import { JournalEntry } from '@prisma/client'
+
+const EntryCard = ({ entry }: { entry: JournalEntry }) => {
   const date = new Date(entry.createdAt).toDateString()
   return (
     <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">

@@ -1,10 +1,17 @@
 'use client'
 
 import { updateEntry } from '@/utils/api'
+import { JournalEntry, Analysis } from '@prisma/client'
 import { useState } from 'react'
 import { useAutosave } from 'react-autosave'
 
-const Editor = ({ entry }) => {
+type iProps = {
+  entry: JournalEntry & {
+    analysis: Analysis | null
+  }
+}
+
+const Editor = ({ entry }: iProps) => {
   const [value, setValue] = useState(entry.content)
   const [isLoading, setIsLoading] = useState(false)
   const [analysis, setAnalysis] = useState(entry!.analysis!)

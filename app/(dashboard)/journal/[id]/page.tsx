@@ -20,8 +20,8 @@ const getEntry = async (id: string) => {
   return entry
 }
 
-const EntryPage = async ({ params }) => {
-  const entry = await getEntry(params.id)
+const EntryPage = async ({ params }: { params: { id: string } }) => {
+  const entry = (await getEntry(params.id))!
 
   return (
     <div className="h-full w-full">
