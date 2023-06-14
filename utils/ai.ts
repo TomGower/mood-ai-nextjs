@@ -2,6 +2,10 @@ import { PromptTemplate } from 'langchain/prompts'
 import { OpenAI } from 'langchain/llms/openai'
 import { StructuredOutputParser } from 'langchain/output_parsers'
 import { z } from 'zod'
+import { Document } from 'langchain/document'
+import { loadQARefineChain } from 'langchain/chains'
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
+import { MemoryVectorStore } from 'langchain/vectorstores/memory'
 
 const parser = StructuredOutputParser.fromZodSchema(
   z.object({
@@ -57,4 +61,34 @@ export const analyze = async (content: string) => {
   } catch (error) {
     console.log(error)
   }
+}
+
+type QAEntry = {
+  content: string
+  id: string
+  createdAt: Date
+}
+
+export const qa = async (question: string, entries: QAEntry[]) => {
+  const docs = entries.map((entry) => {
+    return new Document({
+      pageContent: entry.content,
+      metadata: {
+        source: entry.id,
+        date: entry.createdAt,
+      },
+    })
+  })
+  const model = new OpenAI({ temperature: 0, modelName: 'gpt-3.5-turbo' })
+  // chain allows you to chain multiple AI calls together
+  const chain = loadQARefineChain(model)
+  const embeddings = new OpenAIEmbeddings()
+  const vectorStore = await MemoryVectorStore.fromDocuments(docs, embeddings)
+  const relevantDocs = await vectorStore.similaritySearch(question)
+  const res = await chain.call({
+    input_documents: relevantDocs,
+    question,
+  })
+
+  return res.output_text
 }
