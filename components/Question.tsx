@@ -8,17 +8,17 @@ const Question = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [response, setResponse] = useState('')
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    // do stuff
     setValue(e.target.value)
+    // doing stuff was moved to handleSubmit
   }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    setIsLoading(false)
+    setIsLoading(true)
     const answer = await askQuestion(value)
     setResponse(answer)
     setValue('')
-    setIsLoading(true)
+    setIsLoading(false)
   }
 
   return (
